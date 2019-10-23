@@ -3,7 +3,6 @@ package main
 import (
 	"time"
 	"math/rand"
-	"runtime"
 	"fmt"
 	"sync"
 )
@@ -11,10 +10,10 @@ import (
 var simulations = float64(100000)
 var numDecks int
 var scores = []int{0, 0, 0}
-
+var threads = 1000
 func main() {
 	var wg sync.WaitGroup
-	for i := 0; i < runtime.NumCPU()*2; i ++ {
+	for i := 0; i < threads; i ++ {
 		wg.Add(1)
 		go playGame(&wg)
 	}
@@ -23,7 +22,7 @@ func main() {
 }
 
 func playGame(wg *sync.WaitGroup) {
-	for i := 0; float64(i) < simulations/float64(runtime.NumCPU()*2); i++ {
+	for i := 0; float64(i) < simulations/float64(threads); i++ {
 		stdDeck := newDeck()
 		playHand(stdDeck)
 	}
@@ -68,7 +67,6 @@ func playHand(stdDeck []int) {
 	}
 
 	for getCardScore(dealerCards) < 18 {
-		exit = false
 		if getCardScore(dealerCards) == 17 {
 			exit = true
 			for k, v := range dealerCards {
@@ -81,7 +79,6 @@ func playHand(stdDeck []int) {
 		if exit == true {
 			break
 		}
-
 		dealerCards = append(dealerCards, stdDeck[0])
 		stdDeck = stdDeck[1:]
 	}
