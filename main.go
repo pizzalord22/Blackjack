@@ -7,10 +7,12 @@ import (
 	"sync"
 )
 
+// declare package level variables
 var simulations = float64(100000)
 var numDecks int
 var scores = []int{0, 0, 0}
 var threads = 1000
+
 func main() {
 	var wg sync.WaitGroup
 	for i := 0; i < threads; i ++ {
@@ -21,6 +23,7 @@ func main() {
 	fmt.Printf("win %.2f%s\nequal %.2f%s\nlose %.2f%s", float64(scores[0])/simulations*100, "%", float64(scores[1])/simulations*100, "%", float64(scores[2])/simulations*100, "%")
 }
 
+// play the game
 func playGame(wg *sync.WaitGroup) {
 	for i := 0; float64(i) < simulations/float64(threads); i++ {
 		stdDeck := newDeck()
@@ -29,6 +32,7 @@ func playGame(wg *sync.WaitGroup) {
 	wg.Done()
 }
 
+// create a new deck
 func newDeck() []int {
 	stdDeck := []int{
 		2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 11,
@@ -48,6 +52,7 @@ func newDeck() []int {
 	return stdDeckTemp
 }
 
+// play a hand
 func playHand(stdDeck []int) {
 	var dealerCards []int
 	var playerCards []int
@@ -104,6 +109,7 @@ func playHand(stdDeck []int) {
 	}
 }
 
+// shuffle a given deck
 func Shuffle(slice []int) []int {
 	rand.Seed(int64(time.Now().UnixNano()))
 	for n := len(slice); n > 0; n-- {
@@ -113,6 +119,7 @@ func Shuffle(slice []int) []int {
 	return slice
 }
 
+// get the score of the cards
 func getCardScore(cards []int) (x int) {
 	for _, v := range cards {
 		x += v
